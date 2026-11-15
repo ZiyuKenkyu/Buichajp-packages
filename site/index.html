@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buicha.jp Packages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
+<style>
+  :root {
+    --bg: #e7e7e4; --surface: #f3f3f1; --ink: #111111; --text: #161616; --text-2: #5c5c58;
+    --line: #cfcfcb; --accent: #f5a524; --accent-ink: #a55a00;
+    --jp: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151514; --surface: #1e1e1c; --ink: #f1f1ee; --text: #ecece8; --text-2: #b0b0aa; --line: #3a3a37; --accent-ink: #f7b955; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--jp); line-height: 1.7;
+         padding: 48px max(16px, env(safe-area-inset-left, 0px)) 64px max(16px, env(safe-area-inset-right, 0px)); }
+  main { max-width: 760px; margin: 0 auto; display: grid; gap: 28px; }
+  h1 { margin: 0; font-size: clamp(28px, 5vw, 40px); line-height: 1.2; display: flex; align-items: baseline; gap: 8px; }
+  h1::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  p { margin: 0; color: var(--text-2); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; display: grid; gap: 14px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-2); }
+  .url { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  code { font-family: var(--mono); font-size: 15px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; overflow-wrap: anywhere; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 10px 20px; cursor: pointer; text-decoration: none; display: inline-block; }
+  .primary { background: var(--accent); color: #111; }
+  .ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  ul { margin: 0; padding-left: 1.2em; }
+  a { color: var(--accent-ink); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Buicha.jp Packages</h1>
+  <p>VRChat Creator Companion (VCC) 用のパッケージ一覧です。<br>Packages for the VRChat Creator Companion (VCC).</p>
+
+  <section class="card" aria-labelledby="add-h">
+    <span class="eyebrow" id="add-h">Add to VCC</span>
+    <div class="url">
+      <a class="btn primary" href="vcc://vpm/addRepo?url=https%3A%2F%2Fpackages.buicha.jp%2Fvpm.json">VCC に追加 / Add to VCC</a>
+      <button class="btn ghost" type="button" id="copy">URL をコピー / Copy URL</button>
+    </div>
+    <code id="listing">https://packages.buicha.jp/vpm.json</code>
+    <p>ボタンが動かないときは、VCC の Settings → Packages → Add Repository に上の URL を入れてください。<br>
+       If the button does nothing, paste the URL into VCC: Settings → Packages → Add Repository.</p>
+  </section>
+
+  <section class="card" aria-labelledby="pkg-h">
+    <span class="eyebrow" id="pkg-h">Packages</span>
+    <ul>
+      <li><strong>Buicha Live Player</strong> <code>jp.buicha.live.player</code><br>
+        ぶいちゃライブの配信や YouTube などの動画を映す、ワールド用のスクリーンと操作パネル。<br>
+        A screen and control panel for VRChat worlds that plays Buicha Live streams and video links such as YouTube.</li>
+    </ul>
+    <p><a href="https://live.buicha.jp">live.buicha.jp</a></p>
+  </section>
+</main>
+<script>
+  document.getElementById("copy").addEventListener("click", async (e) => {
+    const text = document.getElementById("listing").textContent;
+    try { await navigator.clipboard.writeText(text); e.target.textContent = "コピーしました / Copied"; }
+    catch { const r = document.createRange(); r.selectNodeContents(document.getElementById("listing")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  });
+</script>
+</body>
+</html>

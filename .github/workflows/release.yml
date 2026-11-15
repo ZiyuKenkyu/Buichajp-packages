@@ -1,0 +1,71 @@
+# パッケージの版を出して、VCC 用の一覧 (https://packages.buicha.jp/vpm.json) を更新する。
+# 使い方: Packages/jp.buicha.live.player/package.json の version を上げて push し、
+#         Actions タブで「Release and publish listing」を Run workflow する。
+# 同じ版のリリースが既にあれば作らず、一覧だけ作り直す。
+name: Release and publish listing
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: release-and-pages
+  cancel-in-progress: false
+
+env:
+  PACKAGE_ID: jp.buicha.live.player
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: v
+        run: echo "version=$(jq -r .version "Packages/$PACKAGE_ID/package.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Build zip (package.json at the zip root)
+        run: |
+          cd "Packages/$PACKAGE_ID"
+          zip -r -X "$GITHUB_WORKSPACE/$PACKAGE_ID-${{ steps.v.outputs.version }}.zip" . -x '*.DS_Store'
+
+      - name: Create release if it does not exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ steps.v.outputs.version }}"
+          if gh release view "$tag" > /dev/null 2>&1; then
+            echo "Release $tag already exists; only the listing is rebuilt."
+          else
+            gh release create "$tag" \
+              "$PACKAGE_ID-$tag.zip" \
+              "Packages/$PACKAGE_ID/package.json" \
+              --title "Buicha Live Player $tag" \
+              --notes "VCC: https://packages.buicha.jp/vpm.json"
+          fi
+
+  listing:
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build vpm.json from all releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/build_listing.py --repo "${{ github.repository }}" --out site/vpm.json
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

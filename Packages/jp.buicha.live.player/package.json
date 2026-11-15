@@ -1,0 +1,19 @@
+{
+  "name": "jp.buicha.live.player",
+  "displayName": "Buicha Live Player",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "A video screen and control panel for VRChat worlds. Plays Buicha Live streams (live.buicha.jp), YouTube and other video links, with 4-channel and stage modes. Japanese / English.",
+  "author": {
+    "name": "Buicha.jp",
+    "url": "https://live.buicha.jp"
+  },
+  "documentationUrl": "https://live.buicha.jp",
+  "vpmDependencies": {
+    "com.vrchat.worlds": ">=3.10.0"
+  },
+  "legacyFolders": {
+    "Assets\\BuichaJP\\BuichaLive-Player": ""
+  },
+  "url": ""
+}
